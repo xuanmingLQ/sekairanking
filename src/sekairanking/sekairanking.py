@@ -3,11 +3,12 @@ import asyncio, os
 from datetime import datetime, timedelta
 from astrbot.api import logger, AstrBotConfig
 
-last_screenshot_time: datetime = None
+last_screenshot_time: datetime | None = None
 
 lock = asyncio.Lock()
 
 async def get_sekairanking_img(config: AstrBotConfig, rank: int | None = None):
+    global last_screenshot_time, lock
     r"""获取截图的路径"""
     if rank == None:
         screenshot_path = "data/overview.png"
