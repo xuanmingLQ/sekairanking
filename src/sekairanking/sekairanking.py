@@ -2,17 +2,19 @@ from ..utils.webdriver import PlaywrightPage
 import asyncio, os
 from datetime import datetime, timedelta
 from astrbot.api import logger, AstrBotConfig
+from typing import Optional
 
 last_screenshot_time: datetime | None = None
 
 lock = asyncio.Lock()
 
-async def get_sekairanking_img(config: AstrBotConfig, rank: int | None = None):
+async def get_sekairanking_img(config: AstrBotConfig, rank: Optional[int] = None):
     global last_screenshot_time, lock
     r"""获取截图的路径"""
-    if rank == None:
+    if rank is None:
         screenshot_path = "data/overview.png"
     else:
+        rank = int(rank)
         if rank not in config.all_ranks:
             raise Exception(f"排名 {rank} 无效，支持的排名：{config.all_ranks}")
         screenshot_path = f"data/chart-{rank}.png"

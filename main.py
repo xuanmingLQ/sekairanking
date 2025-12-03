@@ -3,6 +3,7 @@ from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
 from .src.sekairanking.sekairanking import get_sekairanking_img
 from .src.utils.webdriver import PlaywrightPage
+from typing import Optional
 
 @register("sekairanking", "xmlq", "访问sekairanking并截图", "0.0.1")
 class MyPlugin(Star):
@@ -15,10 +16,12 @@ class MyPlugin(Star):
         await get_sekairanking_img(self.config) # 初始化后立刻初始化浏览器并截图一次
    
     @filter.command("cnskp")
-    async def _sekairanking(self, event: AstrMessageEvent, rank: int | None):
+    async def _sekairanking(self, event: AstrMessageEvent, rank: Optional[int] = None):
         r"""获取截图，返回图片"""
-        if rank is None  or rank <= 0:
-            rank = None
+        if rank is not None:
+            rank = int(rank)
+            if rank <= 0:
+                rank = None
         try:
             img_path = get_sekairanking_img(self.config, rank)
             yield event.image_result(img_path)
