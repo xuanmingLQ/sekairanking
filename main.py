@@ -15,9 +15,9 @@ class MyPlugin(Star):
         await get_sekairanking_img(self.config) # 初始化后立刻初始化浏览器并截图一次
    
     @filter.command("cnskp")
-    async def _sekairanking(self, event: AstrMessageEvent, rank: int):
-        r"""获取截图，返回图片路径"""
-        if rank <= 0:
+    async def _sekairanking(self, event: AstrMessageEvent, rank: int | None):
+        r"""获取截图，返回图片"""
+        if rank <= 0 or rank is None:
             rank = None
         try:
             img_path = get_sekairanking_img(self.config, rank)
