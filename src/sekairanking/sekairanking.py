@@ -8,13 +8,12 @@ last_screenshot_time: datetime | None = None
 
 lock = asyncio.Lock()
 
-async def get_sekairanking_img(config: AstrBotConfig, rank: Optional[int] = None):
+async def get_sekairanking_img(config: AstrBotConfig, rank: Optional[int] = None) -> str:
     global last_screenshot_time, lock
     r"""获取截图的路径"""
     if rank is None:
         screenshot_path = "data/overview.png"
     else:
-        rank = int(rank)
         if rank not in config.all_ranks:
             raise Exception(f"排名 {rank} 无效，支持的排名：{config.all_ranks}")
         screenshot_path = f"data/chart-{rank}.png"
@@ -24,7 +23,7 @@ async def get_sekairanking_img(config: AstrBotConfig, rank: Optional[int] = None
                 return os.path.abspath(screenshot_path)
         await screenshot_sekairanking_page(config)
         last_screenshot_time = datetime.now()
-    return get_sekairanking_img(config, rank)
+    return await get_sekairanking_img(config, rank)
 
 async def screenshot_sekairanking_page(config: AstrBotConfig,):
     async with PlaywrightPage() as page:

@@ -18,12 +18,10 @@ class MyPlugin(Star):
     @filter.command("cnskp")
     async def _sekairanking(self, event: AstrMessageEvent, rank: Optional[int] = None):
         r"""获取截图，返回图片"""
-        if rank is not None:
-            rank = int(rank)
-            if rank <= 0:
-                rank = None
+        if rank is not None and rank <= 0:
+            rank = None
         try:
-            img_path = get_sekairanking_img(self.config, rank)
+            img_path = await get_sekairanking_img(self.config, rank)
             yield event.image_result(img_path)
         except Exception as e:
             logger.error(f"获取截图失败：{e}")
