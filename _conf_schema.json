@@ -6,7 +6,7 @@
   },
   "base_url":{
     "description": "要访问的目标网页",
-    "type": "str",
+    "type": "string",
     "default": "https://sekairanking.exmeaning.com"
   },
   "page_size":{

@@ -17,7 +17,7 @@ class MyPlugin(Star):
     @filter.command("cnskp")
     async def _sekairanking(self, event: AstrMessageEvent, rank: int | None):
         r"""获取截图，返回图片"""
-        if rank <= 0 or rank is None:
+        if rank is None  or rank <= 0:
             rank = None
         try:
             img_path = get_sekairanking_img(self.config, rank)
