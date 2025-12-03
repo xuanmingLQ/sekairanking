@@ -1,8 +1,8 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
-from src.sekairanking.sekairanking import get_sekairanking_img
-from src.utils.webdriver import PlaywrightPage
+from .src.sekairanking.sekairanking import get_sekairanking_img
+from .src.utils.webdriver import PlaywrightPage
 
 @register("sekairanking", "xmlq", "访问sekairanking并截图", "0.0.1")
 class MyPlugin(Star):

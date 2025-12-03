@@ -1,4 +1,4 @@
-from src.utils.webdriver import PlaywrightPage
+from ..utils.webdriver import PlaywrightPage
 import asyncio, os
 from datetime import datetime, timedelta
 from astrbot.api import logger, AstrBotConfig
