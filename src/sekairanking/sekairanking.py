@@ -42,9 +42,11 @@ async def get_sekairanking_img(config: AstrBotConfig, event_id: Optional[int] = 
         try:
             await screenshot_sekairanking_page(config, event_id)
         except Exception as e:
-            logger.error(f"下载图片失败 {e}，尝试返回缓存值")
+            logger.error(f"下载图片失败 {e} 尝试返回缓存值")
             if os.path.exists(screenshot_path):
                 return os.path.abspath(screenshot_path)
+            else:
+                raise
         last_screenshot_time[event_id] = datetime.now()
     return await get_sekairanking_img(config, event_id, rank)
 
@@ -73,5 +75,6 @@ async def screenshot_sekairanking_page(config: AstrBotConfig, event_id: Optional
         for rank in config.all_ranks:
             card_id = f"chart-{rank}"
             card_locator = page.locator(f"xpath=//*[@id='{card_id}']/..")
+            await card_locator.scroll_into_view_if_needed()
             await card_locator.screenshot(path=f"{screenshot_path}{card_id}.png")
 
