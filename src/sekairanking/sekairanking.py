@@ -38,9 +38,10 @@ async def get_sekairanking_img(config: AstrBotConfig, event_id: Optional[int] = 
         if event_id in last_screenshot_time and (datetime.now() < last_screenshot_time[event_id] + timedelta(seconds=config.cache_duration)):
             if os.path.exists(screenshot_path):
                 return os.path.abspath(screenshot_path)
-        logger.info(f"event {event_id} 的截图已过期，重新获取")
+        logger.info(f"event{event_id} 的截图已过期，重新获取")
         try:
             await screenshot_sekairanking_page(config, event_id)
+            logger.info(f"获取 event{event_id} 的截图成功")
         except Exception as e:
             logger.error(f"下载图片失败 {e} 尝试返回缓存值")
             if os.path.exists(screenshot_path):
