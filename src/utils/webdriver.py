@@ -77,5 +77,3 @@ class PlaywrightPage:
     async def stop(cls):
         if _playwright_instance is not None:
             await _playwright_instance.stop()
-        if _browsers is not None:
-            _browsers.shutdown()
