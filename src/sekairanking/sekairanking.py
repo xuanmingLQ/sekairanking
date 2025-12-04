@@ -60,10 +60,13 @@ async def screenshot_sekairanking_page(config: AstrBotConfig, event_id: Optional
         url = f"{url}event/{event_id}"
     async with PlaywrightPage() as page:
         await page.goto(url, wait_until='domcontentloaded', timeout=config.timeout*1000)
-        loading_overlay_locator = page.locator("#loadingOverlay.loading-overlay.hidden")
-        await page.set_viewport_size({"width": config.page_size[0], "height": config.page_size[1]})
         # 等待加载遮罩消失
-        await loading_overlay_locator.wait_for(state="attached",timeout=config.timeout*1000)
+        await page.wait_for_selector(
+            "#loadingOverlay.hidden",
+            state="attached",  
+            timeout=config.timeout*1000 
+        )
+        await page.set_viewport_size({"width": config.page_size[0], "height": config.page_size[1]})
         # 截图总览
         await page.screenshot(path=f"{screenshot_path}overview.png",full_page=True)
         # 截图单个rank
