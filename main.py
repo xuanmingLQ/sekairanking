@@ -1,9 +1,8 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
-from .src.sekairanking.sekairanking import get_sekairanking_img
+from .src.sekairanking.sekairanking import get_sekairanking_img, extract_event_id_rank_from_args
 from .src.utils.webdriver import PlaywrightPage
-from typing import Optional
 
 @register("sekairanking", "xmlq", "访问sekairanking并截图", "0.0.1")
 class MyPlugin(Star):
@@ -16,12 +15,14 @@ class MyPlugin(Star):
         await get_sekairanking_img(self.config) # 初始化后立刻初始化浏览器并截图一次
    
     @filter.command("cnskp")
-    async def _sekairanking(self, event: AstrMessageEvent, rank: Optional[int] = None):
+    async def _sekairanking(self, event: AstrMessageEvent):
         r"""获取截图，返回图片"""
+        message = event.get_message_str()
+        event_id, rank, _ = extract_event_id_rank_from_args(message)
         if rank is not None and rank <= 0:
             rank = None
         try:
-            img_path = await get_sekairanking_img(self.config, rank)
+            img_path = await get_sekairanking_img(self.config, event_id, rank)
             yield event.image_result(img_path)
         except Exception as e:
             logger.error(f"获取截图失败：{e}")
