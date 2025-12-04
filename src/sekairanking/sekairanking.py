@@ -22,7 +22,7 @@ def extract_event_id_rank_from_args(args: str)->Tuple[Optional[None], Optional[N
 async def get_sekairanking_img(config: AstrBotConfig, event_id: Optional[int] = None, rank: Optional[int] = None) -> str:
     global last_screenshot_time, lock
     r"""获取截图的路径"""
-    screenshot_path = "data/"
+    screenshot_path = "data/sekairanking/screenshots/"
     if event_id is None:
         screenshot_path = f"{screenshot_path}current/"
         event_id = -1
@@ -52,7 +52,7 @@ async def get_sekairanking_img(config: AstrBotConfig, event_id: Optional[int] = 
 
 async def screenshot_sekairanking_page(config: AstrBotConfig, event_id: Optional[int] = None):
     url:str = config.base_url
-    screenshot_path = "data/"
+    screenshot_path = "data/sekairanking/screenshots/"
     if event_id is None:
         screenshot_path = f"{screenshot_path}current/"
     else:
