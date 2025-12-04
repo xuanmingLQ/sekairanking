@@ -18,9 +18,11 @@ class MyPlugin(Star):
     async def _sekairanking(self, event: AstrMessageEvent):
         r"""获取截图，返回图片"""
         message = event.get_message_str()
+        logger.debug(message)
         event_id, rank, _ = extract_event_id_rank_from_args(message)
         if rank is not None and rank <= 0:
             rank = None
+        logger.debug(f"event_id={event_id} rank={rank}")
         try:
             img_path = await get_sekairanking_img(self.config, event_id, rank)
             yield event.image_result(img_path)

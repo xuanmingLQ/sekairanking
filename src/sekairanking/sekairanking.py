@@ -38,7 +38,13 @@ async def get_sekairanking_img(config: AstrBotConfig, event_id: Optional[int] = 
         if event_id in last_screenshot_time and (datetime.now() < last_screenshot_time[event_id] + timedelta(seconds=config.cache_duration)):
             if os.path.exists(screenshot_path):
                 return os.path.abspath(screenshot_path)
-        await screenshot_sekairanking_page(config, event_id)
+        logger.info(f"event {event_id} 的截图已过期，重新获取")
+        try:
+            await screenshot_sekairanking_page(config, event_id)
+        except Exception as e:
+            logger.error(f"下载图片失败 {e}，尝试返回缓存值")
+            if os.path.exists(screenshot_path):
+                return os.path.abspath(screenshot_path)
         last_screenshot_time[event_id] = datetime.now()
     return await get_sekairanking_img(config, event_id, rank)
 
@@ -53,19 +59,16 @@ async def screenshot_sekairanking_page(config: AstrBotConfig, event_id: Optional
             url += '/'
         url = f"{url}event/{event_id}"
     async with PlaywrightPage() as page:
-        try:
-            await page.goto(url, wait_until='domcontentloaded', timeout=config.timeout*1000)
-            loading_overlay_locator = page.locator("#loadingOverlay.loading-overlay.hidden")
-            await page.set_viewport_size({"width": config.page_size[0], "height": config.page_size[1]})
-            # 等待加载遮罩消失
-            await loading_overlay_locator.wait_for(state="attached",timeout=config.timeout*1000)
-            # 截图总览
-            await page.screenshot(path=f"{screenshot_path}overview.png",full_page=True)
-            # 截图单个rank
-            for rank in config.all_ranks:
-                card_id = f"chart-{rank}"
-                card_locator = page.locator(f"xpath=//*[@id='{card_id}']/..")
-                await card_locator.screenshot(path=f"{screenshot_path}{card_id}.png")
-        except Exception as e:
-            logger.error(f"下载图片失败{e}")
-            raise
+        await page.goto(url, wait_until='domcontentloaded', timeout=config.timeout*1000)
+        loading_overlay_locator = page.locator("#loadingOverlay.loading-overlay.hidden")
+        await page.set_viewport_size({"width": config.page_size[0], "height": config.page_size[1]})
+        # 等待加载遮罩消失
+        await loading_overlay_locator.wait_for(state="attached",timeout=config.timeout*1000)
+        # 截图总览
+        await page.screenshot(path=f"{screenshot_path}overview.png",full_page=True)
+        # 截图单个rank
+        for rank in config.all_ranks:
+            card_id = f"chart-{rank}"
+            card_locator = page.locator(f"xpath=//*[@id='{card_id}']/..")
+            await card_locator.screenshot(path=f"{screenshot_path}{card_id}.png")
+
