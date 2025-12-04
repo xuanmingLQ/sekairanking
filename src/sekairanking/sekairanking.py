@@ -74,7 +74,6 @@ async def screenshot_sekairanking_page(config: AstrBotConfig, event_id: Optional
         # 截图单个rank
         for rank in config.all_ranks:
             card_id = f"chart-{rank}"
-            card_locator = page.locator(f"xpath=//*[@id='{card_id}']/..")
-            await card_locator.scroll_into_view_if_needed()
+            card_locator = page.locator(f"#{card_id}")
             await card_locator.screenshot(path=f"{screenshot_path}{card_id}.png")
 
